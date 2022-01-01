@@ -1,0 +1,237 @@
+<html>
+<head>
+	<title>Drag Tree</title>
+	<style>
+
+		.tree{
+			display: block;
+			text-align: center;
+		}
+
+		.row{
+			display: block;
+			text-align: center;
+		}
+
+		.spaced{
+			margin:  10px;
+		}
+
+		.button{
+			width: 100px;
+			height:  50px;
+			background-color: #555555;
+			color:  white;
+			font-family: helvetica;
+			border-width: 0px;
+		}
+
+		.light{
+			text-align: center;
+			height: 35px;
+  			width: 35px;
+  			border-radius: 50%;
+  			display: inline-block;
+  			border-color: black;
+  			border-style: solid;
+  			border-width: 2px;
+		}
+
+		.yellow{
+			color:  #DECA57;
+			background-color: #DECA57;
+		}
+
+		.green{
+			color: #427646;
+			background-color: #427646;
+		}
+
+		.red{
+			color:  #C54E57;
+			background-color: #C54E57;
+		}
+
+		.yellow.lit{
+			background-color: yellow;
+		}
+
+		.green.lit{
+			background-color: #1F8327;
+		}
+
+		.red.lit{
+			background-color: red;
+		}
+
+		.light.staging{
+			height: 25px;
+  			width: 25px;
+		}
+
+		.light-row{
+			display: inline-block;
+			margin: 0px auto;
+			width: 100px;
+			text-align: center;
+		}
+
+		.row .input{
+			margin:  0px auto;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="tree" id="dragTree">
+		<div class="row">
+			<div class="light-row" id="staging1">
+				<div class="yellow lit staging light" id="stagingl1"></div>
+				<div class="yellow lit staging light" id="stagingr1"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="light-row" id="staging2">
+				<div class="yellow staging light" id="stagingl2"></div>
+				<div class="yellow staging light" id="stagingr2"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="light-row" id="lights1">
+				<div class="yellow light" id="lightl1"></div>
+				<div class="yellow light" id="lightr1"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="light-row" id="lights2">
+				<div class="yellow light" id="lightl2"></div>
+				<div class="yellow light" id="lightr2"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="light-row" id="lights3">
+				<div class="yellow light" id="lightl3"></div>
+				<div class="yellow light" id="lightr3"></div>
+			</div>
+		</div>
+			<div class="row">
+			<div class="light-row" id="lights4">
+				<div class="green light" id="lightl4"></div>
+				<div class="green light" id="lightr4"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="light-row" id="lights5">
+				<div class="red light" id="lightl5"></div>
+				<div class="red light" id="lightr5"></div>
+			</div>
+		</div>
+	</div>
+	<div class="row spaced">
+		<input type="button" value="Retry" class="button spaced" id="retryButton" />
+		<div class="reaction spaced" id="reactionTime"></div>
+	</div>
+
+<script type="text/javascript">
+	window.addEventListener("load", main, false);
+
+	var stagingl1 = document.getElementById("stagingl1");
+	var stagingr1 = document.getElementById("stagingr1");
+	var stagingl2 = document.getElementById("stagingl2");
+	var stagingr2 = document.getElementById("stagingr2");
+	var lightl1 = document.getElementById("lightl1");
+	var lightr1 = document.getElementById("lightr1");
+	var lightl2 = document.getElementById("lightl2");
+	var lightr2 = document.getElementById("lightr2");
+	var lightl3 = document.getElementById("lightl3");
+	var lightr3 = document.getElementById("lightr3");
+	var lightl4 = document.getElementById("lightl4");
+	var lightr4 = document.getElementById("lightr4");
+	var lightl5 = document.getElementById("lightl5");
+	var lightr5 = document.getElementById("lightr5");
+
+	var reactionArea = document.getElementById("reactionTime");
+	var retryButton = document.getElementById("retryButton");
+	retryButton.addEventListener("click", function(){location.reload()},false);
+
+	function stageOp(){
+		stagingr2.classList.add("lit");
+	}
+
+	function stageUser(){
+		stagingl2.classList.add("lit");
+	}
+
+	function light1(){
+		lightl1.classList.add("lit");
+		lightr1.classList.add("lit");
+	}
+
+	function light2(){
+		lightl2.classList.add("lit");
+		lightr2.classList.add("lit");
+	}
+
+	function light3(){
+		lightl3.classList.add("lit");
+		lightr3.classList.add("lit");
+	}
+
+	function unlight1(){
+		lightl1.classList.remove("lit");
+		lightr1.classList.remove("lit");
+	}
+
+	function unlight2(){
+		lightl2.classList.remove("lit");
+		lightr2.classList.remove("lit");
+	}
+
+	function unlight3(){
+		lightl3.classList.remove("lit");
+		lightr3.classList.remove("lit");
+	}
+
+	function race(start){
+		var end = performance.now();
+		var reaction = end - start-3000;
+
+		stagingl1.classList.remove("lit");
+		stagingr1.classList.remove("lit");
+		stagingl2.classList.remove("lit");
+		stagingr2.classList.remove("lit");
+
+		if(lightl3.classList.contains("lit") || lightl2.classList.contains("lit")){
+			lightl5.classList.add("lit");
+			reactionArea.innerHTML = "RED LIGHT: " + reaction;
+		}
+		else{
+			lightl4.classList.add("lit");
+			reactionArea.innerHTML = "Reaction Time: " + reaction;
+		}
+	}
+
+	function startTree(){
+
+		var start = performance.now();
+		//window.addEventListener("click", function(){race(start)}, false);
+		window.addEventListener("keydown", function(){race(start)}, false);
+
+		window.setTimeout(light1, 750);
+		window.setTimeout(light2, 1500);
+		window.setTimeout(light3, 2250);
+		window.setTimeout(unlight1, 1500);
+		window.setTimeout(unlight2, 2250);
+		window.setTimeout(unlight3, 3000);
+
+		var startTime = performance.now()
+	}
+
+	function main(){
+		window.setTimeout(stageOp, 1000);
+		window.setTimeout(stageUser, 1500);
+		window.setTimeout(startTree, 2000);
+	}
+</script>
+</body>
+</html>
