@@ -2,6 +2,9 @@
 <head>
 	<title>Drag Tree</title>
 	<style>
+		body{
+			font-family: helvetica;
+		}
 
 		.tree{
 			display: block;
@@ -26,29 +29,27 @@
 			border-width: 0px;
 		}
 
+		.hidden{
+			display: none;
+		}
+
 		.light{
 			text-align: center;
-			height: 35px;
-  			width: 35px;
   			border-radius: 50%;
   			display: inline-block;
   			border-color: black;
   			border-style: solid;
-  			border-width: 2px;
 		}
 
 		.yellow{
-			color:  #DECA57;
 			background-color: #DECA57;
 		}
 
 		.green{
-			color: #427646;
 			background-color: #427646;
 		}
 
 		.red{
-			color:  #C54E57;
 			background-color: #C54E57;
 		}
 
@@ -57,27 +58,63 @@
 		}
 
 		.green.lit{
-			background-color: #1F8327;
+			background-color: #00FF00;
 		}
 
 		.red.lit{
 			background-color: red;
 		}
 
-		.light.staging{
-			height: 25px;
-  			width: 25px;
+		.green.fault{
+			background-color: #427646;
 		}
 
 		.light-row{
 			display: inline-block;
 			margin: 0px auto;
-			width: 100px;
 			text-align: center;
 		}
 
-		.row .input{
-			margin:  0px auto;
+		/* here the rules for small windows */
+		@media (max-width: 500px) { 
+		    .light{
+				height: 100px;
+	  			width: 100px;
+	  			border-width: 2px;
+			}
+
+			.light.staging{
+				height: 75px;
+  				width: 75px;
+			}
+		}	
+
+		/* here the rules for windows between 500px and 900px */
+		@media (min-width: 500px) and (max-width: 900px){
+		     .light{
+				height: 50px;
+	  			width: 50px;
+	  			border-width: 2px;
+			}
+
+			.light.staging{
+				height: 35px;
+  				width: 35px;
+			}
+		}
+
+		/* here the rules for windows between 500px and 900px */
+		@media (min-width: 900px){
+		     .light{
+				height: 35px;
+	  			width: 35px;
+	  			border-width: 2px;
+			}
+
+			.light.staging{
+				height: 25px;
+  				width: 25px;
+			}
 		}
 
 	</style>
@@ -138,6 +175,9 @@
 <script type="text/javascript">
 	window.addEventListener("load", main, false);
 
+	const lightInterval = 650;
+	const finishTime = lightInterval*4;
+
 	var stagingl1 = document.getElementById("stagingl1");
 	var stagingr1 = document.getElementById("stagingr1");
 	var stagingl2 = document.getElementById("stagingl2");
@@ -182,6 +222,17 @@
 		lightr3.classList.add("lit");
 	}
 
+	function light4(){
+		lightl4.classList.add("lit");
+		lightr4.classList.add("lit");
+	}
+
+	function light5(){
+		lightl5.classList.add("lit");
+		lightr5.classList.add("lit");
+	}
+
+
 	function unlight1(){
 		lightl1.classList.remove("lit");
 		lightr1.classList.remove("lit");
@@ -197,21 +248,29 @@
 		lightr3.classList.remove("lit");
 	}
 
+	function unlight4(){
+		lightl4.classList.remove("lit");
+		lightr4.classList.remove("lit");
+	}
+
 	function race(start){
 		var end = performance.now();
-		var reaction = end - start-3000;
+		var reaction = end - start-finishTime;
+		reaction = reaction/1000; //convert to seconds
+		reaction = parseFloat(reaction).toFixed(4);
 
 		stagingl1.classList.remove("lit");
 		stagingr1.classList.remove("lit");
 		stagingl2.classList.remove("lit");
 		stagingr2.classList.remove("lit");
+		raceButton.classList.add("hidden");
 
-		if(lightl3.classList.contains("lit") || lightl2.classList.contains("lit")){
+		if(reaction < 0){
 			lightl5.classList.add("lit");
+			lightl4.classList.add("fault");
 			reactionArea.innerHTML = "RED LIGHT: " + reaction;
 		}
 		else{
-			lightl4.classList.add("lit");
 			reactionArea.innerHTML = "Reaction Time: " + reaction;
 		}
 	}
@@ -219,16 +278,17 @@
 	function startTree(){
 
 		var start = performance.now();
-		
+
 		window.addEventListener("keydown", function(){race(start)}, false);
 		raceButton.addEventListener("click", function(){race(start)}, false);
 
-		window.setTimeout(light1, 750);
-		window.setTimeout(light2, 1500);
-		window.setTimeout(light3, 2250);
-		window.setTimeout(unlight1, 1500);
-		window.setTimeout(unlight2, 2250);
-		window.setTimeout(unlight3, 3000);
+		window.setTimeout(light1, lightInterval);
+		window.setTimeout(light2, lightInterval*2);
+		window.setTimeout(light3, lightInterval*3);
+		window.setTimeout(unlight1, lightInterval*2);
+		window.setTimeout(unlight2, lightInterval*3);
+		window.setTimeout(unlight3, lightInterval*4);
+		window.setTimeout(light4, lightInterval*4);
 
 		var startTime = performance.now()
 	}
